@@ -1,0 +1,6 @@
+oemof-solph
+matplotlib
+seaborn
+pandas
+ipykernel
+openpyxl
