@@ -1,3 +1,8 @@
+.csv
+.jpg
+.jpeg
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -158,3 +163,18 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+results/MarketResults2020-Sc0.csv
+results/MarketResults2020-Sc1.csv
+results/MarketResults2020-Sc1.jpg
+results/MarketResults2020-Sc2.csv
+results/MarketResults2020-Sc2.jpg
+results/MarketResults2020-Sc3.csv
+results/MarketResults2020-Sc3.jpg
+data/district_data_2020
+results/MarketResults2020-Sc0.csv
+results/MarketResults2020-Sc1.csv
+results/MarketResults2020-Sc1.jpg
+results/MarketResults2020-Sc2.csv
+results/MarketResults2020-Sc2.jpg
+results/MarketResults2020-Sc3.csv
+results/MarketResults2020-Sc3.jpg

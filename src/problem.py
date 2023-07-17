@@ -1,3 +1,4 @@
+from multiprocessing.pool import ThreadPool
 import numpy as np
 from pymoo.core.problem import Problem
 
@@ -5,7 +6,7 @@ from district import Scenarios, calculate_kpis, create_energy_system, post_proce
 from prepare_district_data import prepare_district_dataframe
 from oemof.solph import Model
 
-
+pool = ThreadPool(8)
 sizing = dict()
 sizing["PV"] = 500  # kW
 sizing["WT"] = 300  # kW
@@ -49,19 +50,19 @@ class ProblemES(Problem):
 
         self.boundary_data=boundary_data
 
-    def _evaluate(self, x, out, *args, **kwargs):
+    def _evaluate(self, X, out, *args, **kwargs):
         if self.boundary_data is None:
             self.build_boundary_data()
 
         f1_ = []
         f2_ = []
-        for i in range(x.shape[0]):
-            self.es_size["PV"] = x[i][0]  # kW
-            self.es_size["WT"] = x[i][1]  # kW
-            self.es_size["P2H"] = x[i][2]  # kW
-            self.es_size["Battery"]["Input_Power"] = x[i][3]/10
-            self.es_size["Battery"]["Output_Power"] = x[i][3]/10
-            self.es_size["Battery"]["Capacity"] = x[i][3]
+        def eval_x_es(x):
+            self.es_size["PV"] = x[0]  # kW
+            self.es_size["WT"] = x[1]  # kW
+            self.es_size["P2H"] = x[2]  # kW
+            self.es_size["Battery"]["Input_Power"] = x[3]/10
+            self.es_size["Battery"]["Output_Power"] = x[3]/10
+            self.es_size["Battery"]["Capacity"] = x[3]
 
             energy_system = create_energy_system(
                 self.boundary_data, scenario=self.scenario, sizing=self.es_size)
@@ -73,10 +74,15 @@ class ProblemES(Problem):
 
             f1 = kpis["total_co2"]
             f2 = kpis["total_system_costs"]
-            self.results_.append([self.generation, [g for g in x[i]], kpis])
-            f1_.append(f1)
-            f2_.append(f2)
+            kpi_val= [k for k in kpis.values()]
+            self.results_.append([[self.generation] + [g for g in x] + kpi_val])
+            print(f"G: {self.generation}, CO2: {f1}, Cost: {f2}")
+            return f1,f2
+        params = [[X[k] for k in range(len(X))]]
+        F= pool.starmap(eval_x_es, params)
+        # f1_.append(f1)
+        # f2_.append(f2)
 
         self.generation += 1
 
-        out["F"] = np.column_stack([f1_, f2_])
+        out["F"] = F #np.column_stack([f1_, f2_])

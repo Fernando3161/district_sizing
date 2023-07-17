@@ -181,8 +181,7 @@ def create_energy_system(boundary_data, scenario, sizing=None):
     # CHP
     t_p2h = Transformer(
         label="t_p2h",
-        inputs={b_electric_supply: Flow(
-            variable_costs=boundary_data["Elec_price"] / 1000)},
+        inputs={b_electric_supply: Flow()},
 
         outputs={b_heat_supply: Flow(nominal_value=sizing["P2H"])},
         conversion_factors={
@@ -211,8 +210,9 @@ def create_energy_system(boundary_data, scenario, sizing=None):
         label="s_da",
         inputs={
             b_el_out: Flow(
-                variable_costs=-
-                boundary_data["Elec_price"]/1001)})
+                variable_costs= 0,
+                    #boundary_data["Elec_price"]/1001
+                )})
 
     energy_system.add(s_day_ahead)
 
@@ -315,7 +315,7 @@ def calculate_kpis(results, boundary_data, sizing, scenario):
 
     total_boiler_heat = results["t_boiler, b_heat_supply"].sum()
     total_heat_demand = results["b_heat_supply, d_heat"].sum()
-    external_heat_fraction = total_boiler_heat/total_heat_demand.sum()
+    external_heat_fraction = total_boiler_heat/total_heat_demand
     kpis["ex_heat_fraction"] = external_heat_fraction
 
     kpis["p2h_heat_fraction"] = 1-external_heat_fraction
@@ -341,7 +341,6 @@ def calculate_kpis(results, boundary_data, sizing, scenario):
 
     annual_table = pd.DataFrame()
 
-    annual_table = pd.DataFrame()
     annual_table["Tech"] = ["pv", "wt", "boiler", "p2h", "batt"]
     annual_table.set_index("Tech", inplace=True)
     annual_table["size"] = [pv_size, wt_size, boiler_size, p2h_size, batt_size]
@@ -355,6 +354,7 @@ def calculate_kpis(results, boundary_data, sizing, scenario):
     annual_table["financial_deprec"] = [5/100]*5
     annual_table["NPV"] = np.nan
     no_of_days = boundary_data.shape[0]/24
+
     annual_table["NPV_days"] = np.nan
 
     for idx, row in annual_table.iterrows():
@@ -378,6 +378,7 @@ def calculate_kpis(results, boundary_data, sizing, scenario):
 
     kpis["total_co2"] = total_co2
     kpis["energy_cost"] = total_cost
+    kpis["system_anpv"] = total_invest_cost
     kpis["total_system_costs"] = total_system_costs
 
     return kpis
