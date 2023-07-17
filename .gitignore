@@ -181,3 +181,8 @@ results/MarketResults2020-Sc2.csv
 results/MarketResults2020-Sc2.jpg
 results/MarketResults2020-Sc3.csv
 results/MarketResults2020-Sc3.jpg
+.vscode/settings.json
+results/year/correl.png
+results/year/pairplot.png
+results/year/sizing.png
+results/year/solutions.png
