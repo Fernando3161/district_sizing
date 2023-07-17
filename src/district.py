@@ -15,8 +15,6 @@ The Energy System of the District consists of:
 * PV System
 * Electric Storage
 * Gas Boiler
-* CHP
-* Thermal Storage
 * Electric Grid
 * Gas Grid
 * Electric bus for selling energy
@@ -187,17 +185,6 @@ def create_energy_system(boundary_data, scenario, sizing=None):
         conversion_factors={
             b_electric_supply: 1,
             b_heat_supply: 1})
-
-    # t_chp = Transformer(
-    #     label='t_chp',
-    #     inputs={b_heat_gas: Flow()},
-    #     outputs={
-    #         b_electric_supply: Flow(nominal_value=sizing["CHP"]["ThermalPower"]),
-    #         b_heat_supply: Flow(nominal_value=sizing["CHP"]["ElectricPower"])},
-    #     conversion_factors={
-    #         b_renewable: sizing["CHP"]["ElectricEfficiency"],
-    #         b_heat_supply: sizing["CHP"]["ThermalEfficiency"]})
-    # energy_system.add(t_chp)
 
     if sizing["Boiler"]['Power'] + sizing["P2H"] < boundary_data["Heat"].max():
         raise AssertionError(
