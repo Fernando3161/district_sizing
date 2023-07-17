@@ -33,9 +33,8 @@ def optimize_es(**kwargs):
     DAYS = kwargs.get("days", 14)
     START_DAY = kwargs.get("start_day", 90)
     N_OBJ = kwargs.get("n_obj", 2)
-    RESULTS_FILENAME = kwargs.get(
-        "filename", f"results_{N_OBJ}o{N_INDIV}i{N_GEN}g.csv"
-    )
+    RESULTS_FILENAME = f"results_{N_OBJ}o{N_INDIV}i{N_GEN}g{DAYS}d.csv"
+
 
     problem = ProblemES()
     problem.days = DAYS

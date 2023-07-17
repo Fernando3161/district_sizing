@@ -4,3 +4,4 @@ seaborn
 pandas
 ipykernel
 openpyxl
+statmodels

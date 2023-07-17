@@ -20,7 +20,8 @@ def check_and_create_folders(folders):
             os.makedirs(folder)
             print(f"Folder '{folder}' created.")
         else:
-            print(f"Folder '{folder}' already exists.")
+            pass
+            #print(f"Folder '{folder}' already exists.")
 
 
 BASE_DIR = get_project_root()
@@ -30,6 +31,8 @@ RESULTS_DIR = join(BASE_DIR,"results")
 RESULTS_OPT_DIR = join(RESULTS_DIR,"optimization")
 RESULTS_YEAR_DIR = join(RESULTS_DIR,"year")
 RESULTS_EXAMPLES_DIR = join(RESULTS_DIR,"district_sizing_examples")
+RESULTS_ITERATIONS_DIR = join(RESULTS_DIR, "iterations")
+RESULTS_FIGURES_DIR= join(RESULTS_DIR, "figures")
 
 def check_and_create_all_folders():
     folders_to_check = [
@@ -39,7 +42,9 @@ def check_and_create_all_folders():
         RESULTS_DIR,
         RESULTS_OPT_DIR,
         RESULTS_YEAR_DIR,
-        RESULTS_EXAMPLES_DIR
+        RESULTS_EXAMPLES_DIR,
+        RESULTS_ITERATIONS_DIR,
+        RESULTS_FIGURES_DIR
     ]
     check_and_create_folders(folders_to_check)
 
