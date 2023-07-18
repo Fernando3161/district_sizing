@@ -1,14 +1,19 @@
-from common import DATA_DIR
+
+import sys
+import os
+path = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(path)
+
 import pandas as pd
 from os.path import join
+from src.common import DATA_DIR
 
 GAS_PRICE = 3.66  # EUR per mmBTU
-
 # Convert GAS_PRICE to EUR/MWh
 # EUR/MWh = EUR/mmBTU / (293.07 kWh/mmBTU)*(1000 kWh/MWh)
 GAS_PRICE = GAS_PRICE / 293.07 * 1000
 
-def prepare_district_dataframe(year=2017):
+def prepare_district_dataframe(year=2017, days = None, start_day=None):
     '''
     Builds a dataframe with the information of the district found
     in the first excel file found. By default, searches for the year 2017.
@@ -93,4 +98,17 @@ def prepare_district_dataframe(year=2017):
     district_df.to_csv(join(DATA_DIR, f"district_data_{year}"))
 
     # Remove the last value as it is for 01-Jan 00:00 of the next year.
-    return district_df[:-1]
+    
+
+    district_df = district_df[:-1]
+
+    if start_day:
+        district_df = district_df.tail(365*34-start_day*24)
+    else:
+        district_df = district_df
+    district_df = district_df.head(days * 24)
+
+    return district_df
+
+if __name__ =="__main__":
+    prepare_district_dataframe(year=2017, days=8, start_day=0)

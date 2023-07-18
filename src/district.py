@@ -21,10 +21,10 @@ The Energy System of the District consists of:
 '''
 
 from pprint import pprint
-from constants import EMISSION_GAS, EMMISION_ELE, EUR
-from financial import calculate_annualized_npv
-from prepare_district_data import prepare_district_dataframe
-from common import RESULTS_DIR
+from src.constants import EMISSION_GAS, EMMISION_ELE, EUR
+from src.financial import calculate_annualized_npv
+from src.prepare_district_data import prepare_district_dataframe
+from src.common import RESULTS_DIR
 import warnings
 import pandas as pd
 import numpy as np
@@ -380,13 +380,8 @@ def create_and_solve_scenario(start_day=None, days=1, year=2017, sizing=None, sc
     :param sizing: Sizing data. Can be empty and default data will be passed
     :param scenario: Scenario Enum value
     '''
-    boundary_data_year = prepare_district_dataframe(year=year)
-    if start_day:
+    boundary_data = prepare_district_dataframe(year=year,days=days, start_day=start_day)
 
-        boundary_data = boundary_data_year.tail(365*34-start_day*24)
-    else:
-        boundary_data = boundary_data_year
-    boundary_data = boundary_data.head(days * 24)
     energy_system = create_energy_system(
         boundary_data, scenario=scenario, sizing=sizing)
     model = Model(energy_system)
