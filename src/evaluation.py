@@ -5,13 +5,14 @@ import warnings
 import matplotlib
 from copy import deepcopy
 import numpy as np
-sns.set_style("darkgrid")
 
-warnings.filterwarnings("ignore")
 import os
-from common import RESULTS_YEAR_DIR, RESULTS_OPT_DIR
+from src.common import RESULTS_YEAR_DIR, RESULTS_OPT_DIR
 import statsmodels.api as sm
 from numpy import log
+
+sns.set_style("darkgrid")
+warnings.filterwarnings("ignore")
 
 def get_pareto_front(df):
     # Add a flag column to identify the Pareto optimal solutions
@@ -30,14 +31,9 @@ def get_pareto_front(df):
     
     return pareto_front
 
-def evaluate_results(filename = "results_year.csv",
-                     output_floder= RESULTS_YEAR_DIR):
 
-    results = pd.read_csv(os.path.join(RESULTS_OPT_DIR,filename))
-    results.head()
 
-    # Plot the evolution of the points obtained
-
+def plot_all_solutions(results, output_folder):
 
     N_GEN =max(results["Gen"])
     fig,ax= plt.subplots(figsize=(6,5))
@@ -53,9 +49,13 @@ def evaluate_results(filename = "results_year.csv",
     ax.set_ylabel("Total CO2 Emissions [Ton/year]")
     ax.set_title("Evolution of the Solutions", fontweight="bold")
     fig.tight_layout()
-    fig.savefig(os.path.join(output_floder,"solutions.png"), dpi=600)
+    fig.savefig(os.path.join(output_folder,"solutions.png"), dpi=600)
 
+    return None
     # Study Relations Between Indicators
+
+
+def plot_kpi_pairgrid(results, output_folder):
 
     optimal = results[results["Gen"] > 0]
 
@@ -72,10 +72,8 @@ def evaluate_results(filename = "results_year.csv",
         'total_co2': "Total CO2\nEmissions [tonCO2]",
         'total_system_costs': "Total Costs\n[EUR]"}, inplace=True)
 
-
     grid = sns.PairGrid(data=optimal)
     grid.fig.set_size_inches(12, 8)
-
 
     grid = grid.map_upper(plt.scatter, s=2, alpha=0.1)
     # grid = grid.map_upper(sns.scatterplot, size=sizes_**2, sizes=(5,10), color = "g")
@@ -86,22 +84,19 @@ def evaluate_results(filename = "results_year.csv",
         'color': 'g'}, bins=40, edgecolor='w')
 
     plt.subplots_adjust(wspace=0.05)
-    filename = os.path.join(output_floder, "pairplot_kpi.png")
+    filename = os.path.join(output_folder, "pairplot_kpi.png")
     grid.savefig(filename, dpi=900, bbox_inches='tight')
 
-    ###################
-    #  second grid with technologies
-    ########################
+
+def plot_tech_pairgrid(results, output_folder):
+
     optimal = results[results["Gen"] > 0]
 
     optimal = optimal[optimal["total_co2"] < 1e9]
     optimal = optimal[[
         'PV', 'Wind', 'P2H', 'Sto',
-        #'ex_el_fraction', 'ex_heat_fraction', 'total_co2',
-        #'total_system_costs'
         ]]
     
-
     optimal.rename(columns={
         'PV': "PV Power\nInstalled [kW]",
         'Wind': "Wind Power\n Installed [kW]",
@@ -110,27 +105,23 @@ def evaluate_results(filename = "results_year.csv",
         }, 
         inplace=True)
 
-
     grid = sns.PairGrid(data=optimal)
     grid.fig.set_size_inches(12, 8)
 
 
     grid = grid.map_upper(plt.scatter, s=2, alpha=0.1)
-    # grid = grid.map_upper(sns.scatterplot, size=sizes_**2, sizes=(5,10), color = "g")
-    # grid = grid.map_upper(corr)
+
 
     grid = grid.map_lower(sns.kdeplot, fill=True, cmap="BuGn")
     grid = grid.map_diag(sns.histplot, kde=True,  line_kws={
         'color': 'g'}, bins=40, edgecolor='w')
 
     plt.subplots_adjust(wspace=0.05)
-    filename = os.path.join(output_floder, "pairplot_techs.png")
+    filename = os.path.join(output_folder, "pairplot_techs.png")
     grid.savefig(filename, dpi=900, bbox_inches='tight')
-    ###########################
 
 
-
-
+def plot_pareto(results, output_folder):
     df_last= results[results["Gen"]==max(results["Gen"])]
     pareto = get_pareto_front(df_last[["total_co2", "total_system_costs"]])
 
@@ -146,9 +137,7 @@ def evaluate_results(filename = "results_year.csv",
     df_pareto["total_system_costs"]*=1/1000                    
 
     fig,axs= plt.subplots(2,2,figsize=(10,8))
-    cols = [ 'PV', 'Wind', 'P2H', 'Sto',
-        #'ex_el_fraction', 'ex_heat_fraction'
-        ]
+    cols = [ 'PV', 'Wind', 'P2H', 'Sto',        ]
     ax_= [axs[i][j] for i in range(2) for j in range(2)]
 
     for i in range(4):
@@ -160,14 +149,11 @@ def evaluate_results(filename = "results_year.csv",
 
     fig.suptitle("Sizing of the Optimal System Configuration", fontweight="bold", fontsize=14, y=0.92)
 
-
-    filename = os.path.join(output_floder, "sizing.png")
+    filename = os.path.join(output_folder, "sizing.png")
     fig.savefig(filename, dpi=900, bbox_inches='tight')
 
     fig,ax= plt.subplots(figsize=(6,4))
     sns.scatterplot(data=df_pareto, x="total_system_costs", y= "total_co2")
-    #ax.set_yscale("log")
-
 
     # Prepare the data for linear regression
     X = [log(x) for x in df_pareto['total_system_costs']]
@@ -186,21 +172,32 @@ def evaluate_results(filename = "results_year.csv",
         "y": [intercept +slope*log(x) for x in np.linspace(0.1,max(df_pareto['total_system_costs']),200)]}
     df_fit=pd.DataFrame.from_dict(fit)
     sns.lineplot(data=df_fit, x="x", y="y", ax=ax, linestyle="--", color = "g")
-    ax.set_xlim(left=0.9*min(df_pareto['total_system_costs']), right=1.05*max(df_pareto['total_system_costs']))
-    ax.set_ylim(bottom=0.9*min(df_pareto['total_co2']), top= 1.05*max(df_pareto['total_co2']))
+    ax.set_xlim(left=0.8*min(df_pareto['total_system_costs']), right=1.01*max(df_pareto['total_system_costs']))
+    ax.set_ylim(bottom=0.8*min(df_pareto['total_co2']), top= 1.01*max(df_pareto['total_co2']))
 
     ax.set_xlabel("Total Costs [1000 EUR]")
     ax.set_ylabel("Total CO2 Emissions [Ton CO2]")
-    filename = os.path.join(output_floder, "correl.png")
+    filename = os.path.join(output_folder, "correl.png")
     m = abs(round(slope,2))
     b= round(intercept,2)
     text = f"y = {b} -{m}*log(x)"
-    print(text)
     ax.set_title("Correlation Between Indicators", fontweight="bold", fontsize=14)
     ax.text(0.75*max(df_pareto['total_system_costs']), 0.75*max(df_pareto['total_co2']), text, ha='center')
-
     fig.savefig(filename, dpi=900, bbox_inches='tight')
 
 
 
+def evaluate_results(filename = "results_year.csv",
+                     output_folder= RESULTS_YEAR_DIR):
 
+    results = pd.read_csv(os.path.join(RESULTS_OPT_DIR,filename))
+    # Plot the evolution of the points obtained
+    plot_all_solutions(results, output_folder)
+    plot_kpi_pairgrid(results, output_folder)
+    plot_tech_pairgrid(results, output_folder)
+    plot_pareto(results, output_folder)
+
+    return None
+
+if __name__=="__main__":
+    evaluate_results("results_year.csv", output_folder=RESULTS_YEAR_DIR)
