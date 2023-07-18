@@ -186,3 +186,5 @@ results/year/correl.png
 results/year/pairplot.png
 results/year/sizing.png
 results/year/solutions.png
+!results/optimization/results_test.csv
+!results/optimization/results_year.csv
