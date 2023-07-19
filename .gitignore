@@ -188,3 +188,7 @@ results/year/sizing.png
 results/year/solutions.png
 !results/optimization/results_test.csv
 !results/optimization/results_year.csv
+
+!results/iterations/solutions.png
+!results/iterations/technologies.png
+!test/test_data/*

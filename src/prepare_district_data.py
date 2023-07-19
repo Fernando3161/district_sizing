@@ -13,7 +13,7 @@ GAS_PRICE = 3.66  # EUR per mmBTU
 # EUR/MWh = EUR/mmBTU / (293.07 kWh/mmBTU)*(1000 kWh/MWh)
 GAS_PRICE = GAS_PRICE / 293.07 * 1000
 
-def prepare_district_dataframe(year=2017, days = None, start_day=None):
+def prepare_district_dataframe(year=2017, days = 30, start_day=0):
     '''
     Builds a dataframe with the information of the district found
     in the first excel file found. By default, searches for the year 2017.
@@ -29,14 +29,14 @@ def prepare_district_dataframe(year=2017, days = None, start_day=None):
     EXCEL_DATA = join(DATA_DIR, "quartier1_2017.xlsx")
 
     start = str(year) + "-01-01"
-    days = 365  # Full year
+    days_year = 365  # Full year
 
     # Correct for leap year
     if year % 4 == 0:
-        days += 1
+        days_year += 1
 
     # Set datetime objects with appropriate dates
-    dates = pd.date_range(start, periods=days * 24 + 1, freq="H")
+    dates = pd.date_range(start, periods=days_year * 24 + 1, freq="H")
 
     # Electricity
     electricity = pd.read_excel(EXCEL_DATA,
