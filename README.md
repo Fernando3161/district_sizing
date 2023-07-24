@@ -1,6 +1,6 @@
 # District Sizing Tool for Energy Supply
 
-![District Sizing Tool](https://github.com/Fernando3161/district_sizing/blob/main/images/district_sizing_tool.png)
+![District Sizing Tool](https://github.com/Fernando3161/district_sizing/blob/main/notebooks/sizing.png)
 
 ## Table of Contents
 
@@ -33,7 +33,76 @@ To install District Sizing, follow these steps:
 
 1. Clone the repository:
 
-'''
+```
 git clone https://github.com/Fernando3161/district_sizing.git
 
-'''
+```
+
+
+2. Change directory to the project folder:
+
+
+```
+cd district_sizing
+```
+
+3. Install the required dependencies:
+
+```
+pip install -r requirements.txt
+
+```
+
+
+## Usage
+
+To use the District Sizing Tool, follow these instructions:
+
+1. Ensure you have completed the installation steps mentioned above.
+
+2. Run the main.py script:
+
+```
+python main.py
+
+```
+
+
+
+3. The tool will prompt you to configure the parameters of your energy system, including the district's energy demand, available area for PV and Wind installations, and storage capacity requirements.
+
+4. Once you've provided the necessary inputs, the optimization process will begin to find the optimal sizes for PV, Wind, Storage, and P2H technologies.
+
+5. After the optimization process is complete, the tool will present the results, including recommended sizes for each device and additional insights.
+
+6. Analyze the results and make informed decisions for your energy system's design and optimization.
+
+## Notebooks
+
+The project includes Jupyter notebooks under the `/notebooks` folder. These notebooks provide valuable insights into the development and analysis of the District Sizing Tool. The following notebooks are available:
+
+1. [Notebook 1: Data Preprocessing](notebooks/data_preprocessing.ipynb) - Explains how the input data is preprocessed and made ready for the optimization process.
+
+2. [Notebook 2: Optimization Process](notebooks/optimization_process.ipynb) - Details the MOO algorithm and its application in sizing energy devices for the residential district.
+
+3. [Notebook 3: Results Analysis](notebooks/results_analysis.ipynb) - Analyses the optimization results and provides visualization for better understanding.
+
+![District Sizing Notebook](https://github.com/Fernando3161/district_sizing/blob/main/images/district_sizing_notebook.png)
+
+## Contributing
+
+We welcome contributions to enhance the functionality and usability of the District Sizing Tool. If you wish to contribute, please follow the guidelines outlined in [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+District Sizing is licensed under the [MIT License](LICENSE).
+
+---
+
+Thank you for using District Sizing! We hope this tool helps you in designing efficient and sustainable energy systems for residential districts. If you have any questions or feedback, please feel free to reach out to us. Happy optimizing!
+
+
+
+
+
+
