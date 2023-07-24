@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -196,7 +197,7 @@ def evaluate_results(filename = "results_year.csv",
     plot_kpi_pairgrid(results, output_folder)
     plot_tech_pairgrid(results, output_folder)
     plot_pareto(results, output_folder)
-
+    logging.info(f"All results plotted in: {output_folder}")
     return None
 
 if __name__=="__main__":

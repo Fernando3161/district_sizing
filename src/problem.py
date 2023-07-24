@@ -1,3 +1,8 @@
+import os
+import sys
+path = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(path)
+
 import numpy as np
 import pandas as pd
 from pymoo.core.problem import Problem
@@ -6,8 +11,8 @@ from time import time
 from oemof.solph import Model
 import logging
 
-from district import Scenarios, calculate_kpis, create_energy_system, post_process_results, solve_model
-from prepare_district_data import prepare_district_dataframe
+from src.district import Scenarios, calculate_kpis, create_energy_system, post_process_results, solve_model
+from src.prepare_district_data import prepare_district_dataframe
 
 logging.basicConfig(level=logging.ERROR)
 

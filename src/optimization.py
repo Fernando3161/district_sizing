@@ -1,12 +1,15 @@
 import os
+import sys
+path = os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(path)
 import logging
 from time import time
 import pandas as pd
 from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.optimize import minimize
 
-from common import RESULTS_OPT_DIR
-from problem import ProblemES
+from src.common import RESULTS_OPT_DIR
+from src.problem import ProblemES
 
 logging.basicConfig(level=logging.ERROR)
 
